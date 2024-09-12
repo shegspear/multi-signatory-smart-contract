@@ -31,7 +31,7 @@ describe("Multisig", function () {
 
     const amount = ethers.parseUnits("100", 18);
 
-    // await token.transfer(multiSig, amount); // comment this line out when testing for contract insuficient balance 
+    await token.transfer(multiSig, amount); // comment this line out when testing for contract insuficient balance 
 
     return{multiSig, owner, acc1, acc2, acc3, acc4, acc5, token}
   }
@@ -118,7 +118,17 @@ describe("Multisig", function () {
     })
 
     it("Should return error for insufficient balance", async function() {
-      const {multiSig, owner, acc1, token} = await loadFixture(deployMultiSig);
+      const erc20Token = await hre.ethers.getContractFactory("Web3CXI");
+      const token = await erc20Token.deploy();
+
+      const [owner, acc1, acc2, acc3, acc4, acc5] = await hre.ethers.getSigners();
+  
+      const multiSigFactory = await hre.ethers.getContractFactory("Multisig");
+      const multiSig = await multiSigFactory.deploy(4, [acc1, acc2, acc3, acc4]);
+  
+      // const amount = ethers.parseUnits("100", 18);
+  
+      // await token.transfer(multiSig, amount); // comment this line out when testing for contract insuficient balance 
 
       const amount = ethers.parseUnits("10", 18);
 
